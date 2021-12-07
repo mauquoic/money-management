@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost/moneymanagement?useSSL=false&allowPublicKeyRetrieval=true
+    username: postgres
+    password: changeme
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: db/1-0-0-changelog-root.xml
+    enabled: true
+
+
