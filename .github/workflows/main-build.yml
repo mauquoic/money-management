@@ -1,0 +1,69 @@
+# This is a basic workflow to help you get started with Actions
+name: Push on main
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  push:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a job called "build" which is a maven install
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-jdk11-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-jdk11-
+
+      # Runs a single command using the runners shell
+      - name: Setup jdk 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      # Runs a set of commands using the runners shell
+      - name: Maven Build
+        run: |
+          echo "Running Build job"
+          mvn clean install -Dregistry=https://maven.pkg.github.com/mauquoic -Dtoken=2490bf1edc7fc87a2e674e6f697de65a445c9415 -Dspring.profiles.active=test
+
+      # Runs the sonar analysis
+      - name: Run SonarQube Analysis
+        run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONARQUBE_HOST }}
+          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+
+      # Build Image
+      - name: Build image
+        run: docker build -t mauquoic/money-management ./
+
+      # Integration tests
+      - name: Run integration tests
+        run: |
+          echo "---------- Running image ----------"
+          docker run --name money-management \
+                     -p 8080:8080 \
+                     -e spring.profiles.active=test \
+                     -d \
+                    mauquoic/money-management
+          echo "---------- Image started ----------"
+          echo "---------- Running postman tests ----------"
+          newman run application-tests.json
+      #          mvn spring-boot:run -Dspring-boot.run.profiles=test
+
+      # Image upload
+      - name: Upload image to dockerhub
+        run: |
+          echo "---------- Logging in to docker ----------"
+          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
+          echo "---------- Pushing image ----------"
+          docker push mauquoic/money-management
