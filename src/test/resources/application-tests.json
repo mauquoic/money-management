@@ -85,7 +85,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/accounts/{{account_id}}/hello",
+					"raw": "http://localhost:8080/accounts/{{account_id}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -93,8 +93,7 @@
 					"port": "8080",
 					"path": [
 						"accounts",
-						"{{account_id}}",
-						"hello"
+						"{{account_id}}"
 					]
 				}
 			},
