@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1641762091266-1" author="cedric (generated)">
+        <createTable tableName="preferences">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_preferences"/>
+            </column>
+            <column name="language" type="VARCHAR(255)"/>
+            <column name="currency" type="VARCHAR(255)"/>
+            <column name="dark_mode" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1641762091266-2" author="cedric (generated)">
+        <createTable tableName="users">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preferences_id" type="BIGINT"/>
+            <column name="username" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1641762091266-3" author="cedric (generated)">
+        <addUniqueConstraint columnNames="email" constraintName="uc_users_email" tableName="users"/>
+    </changeSet>
+    <changeSet id="1641762091266-4" author="cedric (generated)">
+        <addForeignKeyConstraint baseColumnNames="preferences_id" baseTableName="users"
+                                 constraintName="FK_USERS_ON_PREFERENCES" referencedColumnNames="id"
+                                 referencedTableName="preferences"/>
+    </changeSet>
+
+</databaseChangeLog>

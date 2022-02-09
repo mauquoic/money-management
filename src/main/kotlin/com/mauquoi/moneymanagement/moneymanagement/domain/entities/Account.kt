@@ -2,13 +2,10 @@ package com.mauquoi.moneymanagement.moneymanagement.domain.entities
 
 import java.time.LocalDate
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
-@Table(name = "account")
+@Table(name = "account", indexes = [Index(columnList = "currency")])
 data class Account(
     @Id val id: UUID = UUID.randomUUID(),
     @Column(name = "name", nullable = false) val name: String,

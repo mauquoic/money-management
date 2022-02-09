@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component
 class AppWebSecurityConfigurerAdapter : WebSecurityConfigurerAdapter() {
 
     override fun configure(web: WebSecurity?) {
-        web?.ignoring()?.antMatchers("/actuator/*", "/accounts", "/accounts/**", "/error/**")
+        web?.ignoring()?.antMatchers("/actuator/*", "/accounts", "/accounts/**", "/users", "/users/**", "/error/**")
     }
 }
