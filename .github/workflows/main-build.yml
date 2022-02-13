@@ -37,10 +37,10 @@ jobs:
           echo "Running Build job"
           mvn clean install -Dregistry=https://maven.pkg.github.com/mauquoic -Dtoken=2490bf1edc7fc87a2e674e6f697de65a445c9415 -Dspring.profiles.active=test
 
-      # Runs the sonar analysis
-     # - name: Run SonarQube Analysis
-     #   run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONARQUBE_HOST }}
-     #     -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+#       Runs the sonar analysis
+      - name: Run SonarQube Analysis
+        run: mvn sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ secrets.SONARQUBE_HOST }}
+          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
 
       # Build Image
       - name: Build image
