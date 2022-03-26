@@ -15,7 +15,9 @@ data class User(
     var id: UUID? = null,
     @Column(name = "email", nullable = false, unique = true) @NotNull val email: String,
     @OneToOne(cascade = [CascadeType.ALL]) @JoinColumn(name = "preferences_id") val preferences: UserPreferences = UserPreferences(),
-    @Column(name = "username") val username: String?
+    @Column(name = "username") val username: String?,
+    @Column(name = "firstName") val firstName: String? = null,
+    @Column(name = "lastName") val lastName: String? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

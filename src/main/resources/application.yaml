@@ -4,7 +4,15 @@ spring:
   liquibase:
     enabled: false
 
-server:
+
+  security:
+    oauth2:
+      google:
+        client-id: 483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com
+        client-secret: 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
   error:
     include-message: always
 
+logging:
+  level:
+    com.google.api.client: DEBUG

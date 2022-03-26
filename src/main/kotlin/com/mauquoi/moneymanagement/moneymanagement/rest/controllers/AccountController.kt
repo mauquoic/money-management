@@ -9,20 +9,24 @@ import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDomain
 import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.inject.Inject
 
+
 @RestController
+@CrossOrigin
 class AccountController @Inject constructor(private val accountService: AccountService) {
 
     @GetMapping(GET_ACCOUNT)
-    fun getAccount(@PathVariable(ACCOUNT_ID) accountId: UUID) : ResponseEntity<AccountDto> {
+    fun getAccount(@PathVariable(ACCOUNT_ID) accountId: UUID): ResponseEntity<AccountDto> {
         return ResponseEntity.ok(accountService.getAccount(accountId).toDto())
     }
 
     @GetMapping(ACCOUNTS)
-    fun getAccounts() : ResponseEntity<List<AccountDto>> {
+    fun getAccounts(): ResponseEntity<List<AccountDto>> {
+        println(SecurityContextHolder.getContext().authentication)
         return ResponseEntity.ok(accountService.getAccounts().map { it.toDto() })
     }
 

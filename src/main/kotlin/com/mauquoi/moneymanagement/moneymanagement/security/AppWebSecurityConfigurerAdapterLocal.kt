@@ -15,8 +15,8 @@ import javax.inject.Inject
 @Configuration
 @EnableWebSecurity
 @EnableWebMvc
-@Profile("!postman")
-class AppWebSecurityConfigurerAdapter @Inject constructor(
+@Profile("postman")
+class AppWebSecurityConfigurerAdapterLocal @Inject constructor(
     private val oAuthGoogleSecurityFilter: OAuthGoogleSecurityFilter,
     private val corsFilter: CorsFilter
 ) :
@@ -33,6 +33,6 @@ class AppWebSecurityConfigurerAdapter @Inject constructor(
             .and()
             .addFilterBefore(oAuthGoogleSecurityFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(corsFilter, SessionManagementFilter::class.java)
-            .httpBasic()
+            .csrf().disable()
     }
 }
