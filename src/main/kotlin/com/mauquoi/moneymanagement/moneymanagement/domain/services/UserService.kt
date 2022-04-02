@@ -4,13 +4,12 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.User
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.UserPreferences
 import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.UserNotFoundException
+import com.mauquoi.moneymanagement.moneymanagement.domain.models.UserDetails
 import com.mauquoi.moneymanagement.moneymanagement.domain.repositories.UserRepository
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 @Service
 class UserService @Inject constructor(private val userRepository: UserRepository) {
@@ -43,5 +42,9 @@ class UserService @Inject constructor(private val userRepository: UserRepository
 
     fun loadUserByUsername(username: String): User {
         return userRepository.findUserByEmail(username) ?: throw UserNotFoundException()
+    }
+
+    fun getLoggedInUser(): User {
+        return userRepository.findUserByEmail((SecurityContextHolder.getContext().authentication.principal as UserDetails).email)!!
     }
 }

@@ -7,10 +7,8 @@ import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.AccountNotF
 import com.mauquoi.moneymanagement.moneymanagement.domain.services.AccountService
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.AccountDtoFixture
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.slot
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
@@ -74,7 +72,7 @@ internal class AccountControllerTest {
     fun createAccount() {
         val capturedAccount = slot<Account>()
         val accountDto = AccountDtoFixture.accountDto(amount = 100.0)
-        every { accountService.createAccount(capture(capturedAccount)) } returns AccountFixture.account(amount = 100.0)
+        every { accountService.createAccount(capture(capturedAccount)) } just runs
 
         mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
             .contentType(MediaType.APPLICATION_JSON)

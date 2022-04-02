@@ -10,6 +10,7 @@ import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.inject.Inject
@@ -32,8 +33,8 @@ class AccountController @Inject constructor(private val accountService: AccountS
 
     @PostMapping(ACCOUNTS)
     fun createAccount(@RequestBody accountDto: AccountDto): ResponseEntity<AccountDto> {
-        val account = accountService.createAccount(accountDto.toDomain());
-        return ResponseEntity.status(HttpStatus.CREATED).body(account.toDto());
+        accountService.createAccount(accountDto.toDomain());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }

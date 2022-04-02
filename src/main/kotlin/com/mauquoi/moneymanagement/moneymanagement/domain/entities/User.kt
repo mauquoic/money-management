@@ -1,5 +1,6 @@
 package com.mauquoi.moneymanagement.moneymanagement.domain.entities
 
+import com.mauquoi.moneymanagement.moneymanagement.domain.models.UserDetails
 import org.hibernate.Hibernate
 import org.hibernate.annotations.GenericGenerator
 import java.util.*
@@ -18,7 +19,19 @@ data class User(
     @Column(name = "username") val username: String?,
     @Column(name = "firstName") val firstName: String? = null,
     @Column(name = "lastName") val lastName: String? = null,
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "user")
+    val accounts: MutableList<Account> = arrayListOf()
 ) {
+
+    fun addAccount(account: Account) {
+        account.user = this
+        this.accounts.add(account)
+    }
+
+    fun toUserDetails(): UserDetails {
+        return UserDetails(id = id!!, email = email)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -28,6 +41,12 @@ data class User(
     }
 
     override fun hashCode(): Int = javaClass.hashCode()
+
+    override fun toString(): String {
+        return "User(id=$id, email='$email', username=$username, firstName=$firstName, lastName=$lastName)"
+    }
+
+
 }
 
 @Entity

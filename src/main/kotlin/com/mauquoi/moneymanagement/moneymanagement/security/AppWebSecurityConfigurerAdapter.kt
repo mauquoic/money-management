@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.session.SessionManagementFilter
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
@@ -30,6 +31,7 @@ class AppWebSecurityConfigurerAdapter @Inject constructor(
         http
             .authorizeRequests()
             .anyRequest().authenticated()
+            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .addFilterBefore(oAuthGoogleSecurityFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(corsFilter, SessionManagementFilter::class.java)

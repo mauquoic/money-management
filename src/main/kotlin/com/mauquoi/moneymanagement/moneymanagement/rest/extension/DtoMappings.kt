@@ -6,6 +6,7 @@ import com.mauquoi.moneymanagement.moneymanagement.domain.entities.UserPreferenc
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.AccountDto
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.PreferencesDto
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.UserDto
+import org.springframework.security.core.context.SecurityContextHolder
 
 fun Account.toDto() = AccountDto(
     id = this.id,

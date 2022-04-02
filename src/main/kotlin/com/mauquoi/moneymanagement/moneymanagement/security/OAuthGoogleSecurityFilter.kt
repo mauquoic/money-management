@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.inject.Inject
 import javax.servlet.FilterChain
@@ -28,6 +29,7 @@ class OAuthGoogleSecurityFilter @Inject constructor(
         return false
     }
 
+    @Transactional
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -43,7 +45,7 @@ class OAuthGoogleSecurityFilter @Inject constructor(
                         val idToken: GoogleIdToken = googleIdTokenVerifier.verify(idTokenString.substring(7))
                         val user = userService.loadUserByUsername(idToken.payload.email)
                         SecurityContextHolder.getContext().authentication =
-                            UsernamePasswordAuthenticationToken(user, "not-applicable", listOf())
+                            UsernamePasswordAuthenticationToken(user.toUserDetails(), "not-applicable", listOf())
                     } catch (e: Exception) {
                         // TODO: 21.03.22 Add exception logging
                     }

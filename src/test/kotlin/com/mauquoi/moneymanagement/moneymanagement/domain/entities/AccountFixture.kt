@@ -15,7 +15,7 @@ class AccountFixture {
             amount: Double = 1000.0,
             addedOn: LocalDate = LocalDate.now()
         ): Account {
-            return Account(id = id, name = name, description = description, currency = currency, amount = amount, addedOn = addedOn)
+            return Account(id = id, name = name, description = description, currency = currency, amount = amount, addedOn = addedOn, user = UserFixture.user())
         }
     }
 }
