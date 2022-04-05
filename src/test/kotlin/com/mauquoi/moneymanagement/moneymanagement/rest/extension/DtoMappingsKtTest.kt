@@ -32,7 +32,6 @@ internal class DtoMappingsKtTest {
         val account = accountDto.toDomain()
 
         assertAll(
-            { assertThat(account.id).isNotNull() },
             { assertThat(account.name).isEqualTo(accountDto.name) },
             { assertThat(account.amount).isEqualTo(accountDto.amount) },
             { assertThat(account.description).isEqualTo(accountDto.description) },

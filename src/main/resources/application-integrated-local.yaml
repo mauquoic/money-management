@@ -7,5 +7,7 @@ spring:
   liquibase:
     change-log: db/1-0-0-changelog-root.xml
     enabled: true
+  security:
+    type: real
 
 

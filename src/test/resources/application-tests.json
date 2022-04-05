@@ -6,92 +6,33 @@
 	},
 	"item": [
 		{
-			"name": "Add users",
+			"name": "Create user",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 201\", function () {",
-							"    pm.response.to.have.status(201);",
-							"});",
-							"console.log(\"UUID is \" + pm.response.text().replace(/\"/g, \"\"));",
-							"pm.environment.set(\"user_id\", pm.response.text().replace(/\"/g, \"\"));",
-							"console.log(pm.environment.get(\"user_id\"));"
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {}
-			},
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"username\": \"Yakman\",\n    \"email\": \"me@mail.com\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "http://localhost:8080/users",
+					"raw": "http://localhost:8080/users/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Duplicate email fail",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 500 for duplicate email\", function () {",
-							"    pm.response.to.have.status(500);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {}
-			},
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"username\": \"Yakman\",\n    \"email\": \"me@mail.com\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/users",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users"
+						"users",
+						"login"
 					]
 				}
 			},
@@ -110,13 +51,13 @@
 							"pm.test(\"User has correct information.\", function () {",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData).to.have.property(\"id\");",
-							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"user_id\"));",
-							"    pm.expect(jsonData.username).to.eql(\"Yakman\");",
+							"    pm.expect(jsonData.username).to.eql(\"Cédric Mauquoi\");",
 							"    pm.expect(jsonData.email).to.eql(\"me@mail.com\");",
 							"    pm.expect(jsonData.preferences.locale).to.eql(\"en_GB\");",
 							"    pm.expect(jsonData.preferences.currency).to.eql(\"EUR\");",
 							"    pm.expect(jsonData.preferences.darkMode).to.be.true;",
-							"});"
+							"});",
+							"pm.environment.set(\"user_id\", pm.response.json().id);"
 						],
 						"type": "text/javascript"
 					}
@@ -131,7 +72,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"Yakman\",\n    \"email\": \"me@mail.com\"\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -139,7 +80,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/{{user_id}}",
+					"raw": "http://localhost:8080/users/me",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -147,7 +88,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"{{user_id}}"
+						"me"
 					]
 				}
 			},
@@ -184,7 +125,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/{{user_id}}/preferences",
+					"raw": "http://localhost:8080/users/me/preferences",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -192,7 +133,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"{{user_id}}",
+						"me",
 						"preferences"
 					]
 				}
@@ -213,7 +154,7 @@
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData).to.have.property(\"id\");",
 							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"user_id\"));",
-							"    pm.expect(jsonData.username).to.eql(\"Yakman\");",
+							"    pm.expect(jsonData.username).to.eql(\"Cédric Mauquoi\");",
 							"    pm.expect(jsonData.email).to.eql(\"me@mail.com\");",
 							"    pm.expect(jsonData.preferences.locale).to.eql(\"en_US\");",
 							"    pm.expect(jsonData.preferences.currency).to.eql(\"CHF\");",
@@ -241,7 +182,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/{{user_id}}",
+					"raw": "http://localhost:8080/users/me",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -249,7 +190,7 @@
 					"port": "8080",
 					"path": [
 						"users",
-						"{{user_id}}"
+						"me"
 					]
 				}
 			},
@@ -269,6 +210,7 @@
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData).to.have.property(\"id\");",
 							"    pm.expect(jsonData.name).to.eql(\"MyFirstAccount\");",
+							"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
 							"});",
 							"pm.environment.set(\"account_id\", pm.response.json().id);"
 						],
@@ -284,7 +226,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"amount\": 220,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\"\n}",
+					"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"amount\": 2200,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -321,7 +263,7 @@
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"account_id\"));",
 							"    pm.expect(jsonData.name).to.eql(\"MyFirstAccount\");",
-							"    pm.expect(jsonData.amount).to.eql(220.0);",
+							"    pm.expect(jsonData.amount).to.eql(2200.0);",
 							"    pm.expect(jsonData.currency).to.eql(\"EUR\");",
 							"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
 							"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
@@ -389,7 +331,17 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Account has correct information.\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property(\"id\");",
+							"    pm.expect(jsonData.name).to.eql(\"MySecondAccount\");",
+							"    pm.expect(jsonData.amount).to.eql(220);",
+							"    pm.expect(jsonData.currency).to.eql(\"CHF\");",
+							"    pm.expect(jsonData.description).to.be.null;",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -403,7 +355,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"amount\": 220,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\"\n}",
+					"raw": "{\n    \"name\": \"MySecondAccount\",\n    \"amount\": 220,\n    \"currency\": \"CHF\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -463,6 +415,36 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

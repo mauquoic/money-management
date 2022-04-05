@@ -1,12 +1,8 @@
 package com.mauquoi.moneymanagement.moneymanagement.domain.services
 
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.Account
-import com.mauquoi.moneymanagement.moneymanagement.domain.entities.User
 import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.AccountNotFoundException
-import com.mauquoi.moneymanagement.moneymanagement.domain.models.UserDetails
 import com.mauquoi.moneymanagement.moneymanagement.domain.repositories.AccountRepository
-import com.mauquoi.moneymanagement.moneymanagement.domain.repositories.UserRepository
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -27,10 +23,10 @@ class AccountService @Inject constructor(
     }
 
     @Transactional
-    fun createAccount(account: Account) {
+    fun createAccount(account: Account): Account {
         val user = userService.getLoggedInUser()
 
         user.addAccount(account)
-        accountRepository.save(account)
+        return accountRepository.save(account)
     }
 }

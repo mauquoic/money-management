@@ -4,8 +4,8 @@ spring:
   liquibase:
     enabled: false
 
-
   security:
+    type: mocked
     oauth2:
       google:
         client-id: 483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com

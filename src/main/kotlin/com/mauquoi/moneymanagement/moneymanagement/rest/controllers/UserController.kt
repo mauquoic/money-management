@@ -28,18 +28,17 @@ class UserController @Inject constructor(
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userDto.toDomain()).id)
     }
 
-    @GetMapping("/{userId}")
-    fun getUser(@PathVariable("userId") userId: UUID): ResponseEntity<UserDto> {
-        return ResponseEntity.ok(userService.getUser(userId).toDto())
+    @GetMapping("/me")
+    fun getUser(): ResponseEntity<UserDto> {
+        return ResponseEntity.ok(userService.getLoggedInUser().toDto())
     }
 
-    @PutMapping("/{userId}/preferences")
+    @PutMapping("/me/preferences")
     fun updatePreferences(
-        @PathVariable("userId") userId: UUID,
         @RequestBody preferencesDto: PreferencesDto
     ): ResponseEntity<Nothing> {
-        userService.updatePreferences(userId, preferencesDto.toDomain())
-        return ResponseEntity.noContent().build();
+        userService.updatePreferences(preferencesDto.toDomain())
+        return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/login")

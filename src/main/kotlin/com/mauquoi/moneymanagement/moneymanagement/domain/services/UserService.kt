@@ -15,15 +15,15 @@ import javax.inject.Inject
 class UserService @Inject constructor(private val userRepository: UserRepository) {
 
     fun createUser(user: User): User {
-        return userRepository.save(user);
+        return userRepository.save(user)
     }
 
     fun getUser(userId: UUID): User {
         return userRepository.findById(userId).orElseThrow { UserNotFoundException() }
     }
 
-    fun updatePreferences(userId: UUID, newPreferences: UserPreferences) {
-        val user = getUser(userId)
+    fun updatePreferences(newPreferences: UserPreferences) {
+        val user = getLoggedInUser()
         val updatedUser = user.copy(preferences = newPreferences)
         userRepository.save(updatedUser)
     }

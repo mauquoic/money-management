@@ -7,16 +7,17 @@ import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.AccountNotF
 import com.mauquoi.moneymanagement.moneymanagement.domain.services.AccountService
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.AccountDtoFixture
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.*
-import io.mockk.impl.annotations.MockK
+import io.mockk.every
+import io.mockk.slot
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -25,7 +26,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.time.LocalDate
 import java.util.*
 
-@WebMvcTest(AccountController::class)
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 internal class AccountControllerTest {
 
@@ -44,7 +46,9 @@ internal class AccountControllerTest {
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/accounts/$id")
-            .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer 01234")
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.name", CoreMatchers.`is`("name")))
             .andExpect(MockMvcResultMatchers.jsonPath("$.description", CoreMatchers.`is`("description")))
@@ -64,7 +68,9 @@ internal class AccountControllerTest {
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/accounts/$id")
-            .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer 1234")
+        )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
@@ -72,11 +78,14 @@ internal class AccountControllerTest {
     fun createAccount() {
         val capturedAccount = slot<Account>()
         val accountDto = AccountDtoFixture.accountDto(amount = 100.0)
-        every { accountService.createAccount(capture(capturedAccount)) } just runs
+        every { accountService.createAccount(capture(capturedAccount)) } returns AccountFixture.account(amount = 100.0)
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(accountDto)))
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/accounts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer 1234")
+                .content(objectMapper.writeValueAsString(accountDto))
+        )
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("currency", CoreMatchers.`is`("USD")))
             .andExpect(MockMvcResultMatchers.jsonPath("amount", CoreMatchers.`is`(100.0)))

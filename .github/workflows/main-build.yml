@@ -52,12 +52,12 @@ jobs:
           echo "---------- Running image ----------"
           docker run --name money-management \
                      -p 8080:8080 \
-                     -e spring.profiles.active=test \
+                     -e spring.profiles.active=postman \
                      -d \
                     mauquoic/money-management
           echo "---------- Image started ----------"
           echo "---------- Running postman tests ----------"
-          newman run src/test/resources/application-tests.json
+          newman run src/test/resources/application-tests.json --env-var accessToken=987654329876543
       #          mvn spring-boot:run -Dspring-boot.run.profiles=test
 
       # Image upload

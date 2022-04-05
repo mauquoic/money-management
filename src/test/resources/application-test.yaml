@@ -1,6 +1,9 @@
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
+  security:
+    type: mocked
+
 
 server:
   error:

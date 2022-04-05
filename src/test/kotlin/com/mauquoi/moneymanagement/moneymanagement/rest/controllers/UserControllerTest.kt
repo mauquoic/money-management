@@ -14,7 +14,8 @@ import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -22,7 +23,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.util.*
 
-@WebMvcTest(UserController::class)
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 internal class UserControllerTest {
 
@@ -37,10 +39,10 @@ internal class UserControllerTest {
     @Test
     fun getUser() {
         val id = UUID.randomUUID()
-        every { userService.getUser(any()) } returns UserFixture.user(id = id)
+        every { userService.getLoggedInUser() } returns UserFixture.user(id = id)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/$id")
+            MockMvcRequestBuilders.get("/users/me")
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -48,17 +50,16 @@ internal class UserControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.`is`(id.toString())))
 
         assertAll(
-            { verify(exactly = 1) { userService.getUser(id) } }
+            { verify(exactly = 1) { userService.getLoggedInUser() } }
         )
     }
 
     @Test
     fun getUser_userNotFound_404Returned() {
-        val id = UUID.randomUUID()
-        every { userService.getUser(any()) } throws UserNotFoundException()
+        every { userService.getLoggedInUser() } throws UserNotFoundException()
 
         mockMvc.perform(
-            MockMvcRequestBuilders.get("/users/$id")
+            MockMvcRequestBuilders.get("/users/me")
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(MockMvcResultMatchers.status().isNotFound)
@@ -87,12 +88,11 @@ internal class UserControllerTest {
     @Test
     fun updateUserPreferences() {
         val capturedPreferences = slot<UserPreferences>()
-        val user = UserFixture.user()
         val preferencesDto = UserDtoFixture.preferences(locale = Locale.FRANCE)
-        every { userService.updatePreferences(any(), capture(capturedPreferences)) } just runs
+        every { userService.updatePreferences(capture(capturedPreferences)) } just runs
 
         mockMvc.perform(
-            MockMvcRequestBuilders.put("/users/${user.id}/preferences")
+            MockMvcRequestBuilders.put("/users/me/preferences")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(preferencesDto))
         )
