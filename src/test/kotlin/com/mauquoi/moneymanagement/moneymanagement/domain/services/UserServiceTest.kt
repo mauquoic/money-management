@@ -6,14 +6,12 @@ import com.mauquoi.moneymanagement.moneymanagement.domain.entities.UserFixture.C
 import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.UserNotFoundException
 import com.mauquoi.moneymanagement.moneymanagement.domain.models.UserDetails
 import com.mauquoi.moneymanagement.moneymanagement.domain.repositories.UserRepository
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockkStatic
-import io.mockk.slot
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -38,14 +36,6 @@ internal class UserServiceTest {
 
     @InjectMockKs
     private lateinit var userService: UserService
-
-    @BeforeEach
-    internal fun setUp() {
-        mockkStatic(SecurityContextHolder::class)
-        every { SecurityContextHolder.getContext() } returns securityContext
-        every { securityContext.authentication } returns authentication
-        every { authentication.principal } returns UserDetails(id = UUID.randomUUID(), "me@mail.com")
-    }
 
     @Test
     fun createUser() {
@@ -85,7 +75,15 @@ internal class UserServiceTest {
         every { userRepository.findUserByEmail(any()) } returns user
         every { userRepository.save(capture(updatedUser)) } returns user
 
-        userService.updatePreferences(newPreferences)
+        mockkStatic(SecurityContextHolder::class) {
+            every { SecurityContextHolder.getContext() } returns securityContext
+            every { securityContext.authentication } returns authentication
+            every { authentication.principal } returns UserDetails(id = UUID.randomUUID(), "me@mail.com")
+
+            userService.updatePreferences(newPreferences)
+        }
+
+        unmockkStatic(SecurityContextHolder::class)
 
         assertAll(
             { verify(exactly = 1) { userRepository.findUserByEmail("me@mail.com") } },
