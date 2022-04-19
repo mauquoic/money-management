@@ -47,4 +47,8 @@ class UserService @Inject constructor(private val userRepository: UserRepository
     fun getLoggedInUser(): User {
         return userRepository.findUserByEmail((SecurityContextHolder.getContext().authentication.principal as UserDetails).email)!!
     }
+
+    fun getLoggedInUserId(): UUID {
+        return (SecurityContextHolder.getContext().authentication.principal as UserDetails).id
+    }
 }

@@ -18,7 +18,7 @@ internal class DtoMappingsKtTest {
         assertAll(
             { assertThat(accountDto.id).isEqualTo(account.id) },
             { assertThat(accountDto.name).isEqualTo(account.name) },
-            { assertThat(accountDto.amount).isEqualTo(account.amount) },
+            { assertThat(accountDto.balance).isEqualTo(account.balance) },
             { assertThat(accountDto.description).isEqualTo(account.description) },
             { assertThat(accountDto.addedOn).isEqualTo(account.addedOn) },
             { assertThat(accountDto.currency).isEqualTo(account.currency) },
@@ -33,7 +33,7 @@ internal class DtoMappingsKtTest {
 
         assertAll(
             { assertThat(account.name).isEqualTo(accountDto.name) },
-            { assertThat(account.amount).isEqualTo(accountDto.amount) },
+            { assertThat(account.balance).isEqualTo(accountDto.balance) },
             { assertThat(account.description).isEqualTo(accountDto.description) },
             { assertThat(account.addedOn).isEqualTo(LocalDate.now()) },
             { assertThat(account.currency).isEqualTo(accountDto.currency) },

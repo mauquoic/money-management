@@ -8,3 +8,6 @@ data class AccountNotFoundException(override val message: String = "ACCOUNT_NOT_
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 data class UserNotFoundException(override val message: String = "USER_NOT_FOUND") : RuntimeException()
+
+@ResponseStatus(code = HttpStatus.FORBIDDEN)
+data class IllegalEntityAccessException(override val message: String = "ILLEGAL_ENTITY_ACCESS") : RuntimeException()

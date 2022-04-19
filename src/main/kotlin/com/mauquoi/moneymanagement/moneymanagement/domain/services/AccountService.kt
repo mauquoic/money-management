@@ -2,6 +2,7 @@ package com.mauquoi.moneymanagement.moneymanagement.domain.services
 
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.Account
 import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.AccountNotFoundException
+import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.IllegalEntityAccessException
 import com.mauquoi.moneymanagement.moneymanagement.domain.repositories.AccountRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,7 +16,11 @@ class AccountService @Inject constructor(
 ) {
 
     fun getAccount(accountId: UUID): Account {
-        return accountRepository.findById(accountId).orElseThrow { AccountNotFoundException() }
+        val account = accountRepository.findById(accountId).orElseThrow { AccountNotFoundException() }
+        if (account.user!!.id != userService.getLoggedInUserId()) {
+            throw IllegalEntityAccessException()
+        }
+        return account
     }
 
     fun getAccounts(): List<Account> {
@@ -28,5 +33,21 @@ class AccountService @Inject constructor(
 
         user.addAccount(account)
         return accountRepository.save(account)
+    }
+
+    @Transactional
+    fun updateAccount(accountId: UUID, balance: Double) {
+        val account = getAccount(accountId)
+        val snapshot = account.createSnapshot()
+        account.accountSnapshots.add(snapshot)
+        val updatedAccount = account.updateBalance(balance)
+        accountRepository.save(updatedAccount)
+    }
+
+    @Transactional
+    fun editAccount(accountId: UUID, editedAccount: Account) {
+        val account = getAccount(accountId)
+        val updatedAccount = editedAccount.setImmutableInfoFromAccount(account)
+        accountRepository.save(updatedAccount)
     }
 }

@@ -1,7 +1,6 @@
 package com.mauquoi.moneymanagement.moneymanagement.domain.entities
 
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 
 class AccountFixture {
@@ -12,10 +11,11 @@ class AccountFixture {
             name: String = "name",
             description: String = "description",
             currency: Currency = Currency.getInstance("USD"),
-            amount: Double = 1000.0,
-            addedOn: LocalDate = LocalDate.now()
+            balance: Double = 1000.0,
+            addedOn: LocalDate = LocalDate.now(),
+            user: User = UserFixture.user()
         ): Account {
-            return Account(id = id, name = name, description = description, currency = currency, amount = amount, addedOn = addedOn, user = UserFixture.user())
+            return Account(id = id, name = name, description = description, currency = currency, balance = balance, addedOn = addedOn, user = user)
         }
     }
 }

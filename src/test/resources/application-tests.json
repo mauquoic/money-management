@@ -226,7 +226,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"amount\": 2200,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\"\n}",
+					"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"balance\": 2200,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -263,10 +263,190 @@
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"account_id\"));",
 							"    pm.expect(jsonData.name).to.eql(\"MyFirstAccount\");",
-							"    pm.expect(jsonData.amount).to.eql(2200.0);",
+							"    pm.expect(jsonData.balance).to.eql(2200.0);",
+							"    pm.expect(jsonData.currency).to.eql(\"EUR\");",
+							"    pm.expect(jsonData.snapshots).to.be.undefined;",
+							"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
+							"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/accounts/{{account_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts",
+						"{{account_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"balance\": 3000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/accounts/{{account_id}}/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts",
+						"{{account_id}}",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get account after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var moment = require('moment');",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Account has correct information.\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"account_id\"));",
+							"    pm.expect(jsonData.name).to.eql(\"MyFirstAccount\");",
+							"    pm.expect(jsonData.balance).to.eql(3000.0);",
 							"    pm.expect(jsonData.currency).to.eql(\"EUR\");",
 							"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
 							"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+							"    pm.expect(jsonData.snapshots.length).to.eql(1);",
+							"    pm.expect(jsonData.snapshots[0].balance).to.eql(2200.0);",
+							"    pm.expect(jsonData.snapshots[0].validFrom).to.eql(moment().format((\"YYYY-MM-DD\")));",
+							"    pm.expect(jsonData.snapshots[0].validTo).to.eql(moment().format((\"YYYY-MM-DD\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/accounts/{{account_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts",
+						"{{account_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"MyFirstAccountEdited\",\n    \"balance\": 2300,\n    \"currency\": \"USD\",\n    \"description\": \"This has been edited\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/accounts/{{account_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts",
+						"{{account_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get account after edit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var moment = require('moment');",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Account has correct information.\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"account_id\"));",
+							"    pm.expect(jsonData.name).to.eql(\"MyFirstAccountEdited\");",
+							"    pm.expect(jsonData.balance).to.eql(2300.0);",
+							"    pm.expect(jsonData.currency).to.eql(\"USD\");",
+							"    pm.expect(jsonData.description).to.eql(\"This has been edited\");",
+							"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+							"    pm.expect(jsonData.snapshots.length).to.eql(1);",
+							"    pm.expect(jsonData.snapshots[0].balance).to.eql(2200.0);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -338,7 +518,7 @@
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData).to.have.property(\"id\");",
 							"    pm.expect(jsonData.name).to.eql(\"MySecondAccount\");",
-							"    pm.expect(jsonData.amount).to.eql(220);",
+							"    pm.expect(jsonData.balance).to.eql(220);",
 							"    pm.expect(jsonData.currency).to.eql(\"CHF\");",
 							"    pm.expect(jsonData.description).to.be.null;",
 							"});"
@@ -355,7 +535,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"MySecondAccount\",\n    \"amount\": 220,\n    \"currency\": \"CHF\"\n}",
+					"raw": "{\n    \"name\": \"MySecondAccount\",\n    \"balance\": 220,\n    \"currency\": \"CHF\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

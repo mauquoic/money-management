@@ -6,7 +6,7 @@ object URL {
 
     object AccountUrl {
         const val ACCOUNTS = "/accounts"
-        const val GET_ACCOUNT = "$ACCOUNTS/{$ACCOUNT_ID}"
+        const val ACCOUNT_BY_ID = "$ACCOUNTS/{$ACCOUNT_ID}"
     }
 
     object PathVariable {

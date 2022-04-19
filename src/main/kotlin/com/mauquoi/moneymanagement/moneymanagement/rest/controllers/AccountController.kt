@@ -2,9 +2,10 @@ package com.mauquoi.moneymanagement.moneymanagement.rest.controllers
 
 import com.mauquoi.moneymanagement.moneymanagement.domain.services.AccountService
 import com.mauquoi.moneymanagement.moneymanagement.rest.constants.URL.AccountUrl.ACCOUNTS
-import com.mauquoi.moneymanagement.moneymanagement.rest.constants.URL.AccountUrl.GET_ACCOUNT
+import com.mauquoi.moneymanagement.moneymanagement.rest.constants.URL.AccountUrl.ACCOUNT_BY_ID
 import com.mauquoi.moneymanagement.moneymanagement.rest.constants.URL.PathVariable.ACCOUNT_ID
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.AccountDto
+import com.mauquoi.moneymanagement.moneymanagement.rest.dto.BalanceDto
 import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDomain
 import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDto
 import org.springframework.http.HttpStatus
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @CrossOrigin
 class AccountController @Inject constructor(private val accountService: AccountService) {
 
-    @GetMapping(GET_ACCOUNT)
+    @GetMapping(ACCOUNT_BY_ID)
     fun getAccount(@PathVariable(ACCOUNT_ID) accountId: UUID): ResponseEntity<AccountDto> {
         return ResponseEntity.ok(accountService.getAccount(accountId).toDto())
     }
@@ -28,6 +29,18 @@ class AccountController @Inject constructor(private val accountService: AccountS
     fun getAccounts(): ResponseEntity<List<AccountDto>> {
         println(SecurityContextHolder.getContext().authentication)
         return ResponseEntity.ok(accountService.getAccounts().map { it.toDto() })
+    }
+
+    @PutMapping(ACCOUNT_BY_ID)
+    fun editAccount(@PathVariable(ACCOUNT_ID) accountId: UUID, @RequestBody accountDto: AccountDto): ResponseEntity<Nothing> {
+        accountService.editAccount(accountId, accountDto.toDomain())
+        return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("$ACCOUNT_BY_ID/update")
+    fun updateAccount(@PathVariable(ACCOUNT_ID) accountId: UUID, @RequestBody balanceDto: BalanceDto): ResponseEntity<Nothing> {
+        accountService.updateAccount(accountId, balanceDto.balance)
+        return ResponseEntity.noContent().build()
     }
 
     @PostMapping(ACCOUNTS)

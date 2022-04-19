@@ -6,10 +6,9 @@ import com.mauquoi.moneymanagement.moneymanagement.domain.entities.AccountFixtur
 import com.mauquoi.moneymanagement.moneymanagement.domain.exceptions.AccountNotFoundException
 import com.mauquoi.moneymanagement.moneymanagement.domain.services.AccountService
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.AccountDtoFixture
+import com.mauquoi.moneymanagement.moneymanagement.rest.dto.BalanceDto
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.every
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
@@ -77,8 +76,8 @@ internal class AccountControllerTest {
     @Test
     fun createAccount() {
         val capturedAccount = slot<Account>()
-        val accountDto = AccountDtoFixture.accountDto(amount = 100.0)
-        every { accountService.createAccount(capture(capturedAccount)) } returns AccountFixture.account(amount = 100.0)
+        val accountDto = AccountDtoFixture.accountDto(balance = 100.0)
+        every { accountService.createAccount(capture(capturedAccount)) } returns AccountFixture.account(balance = 100.0)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/accounts")
@@ -88,11 +87,51 @@ internal class AccountControllerTest {
         )
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("currency", CoreMatchers.`is`("USD")))
-            .andExpect(MockMvcResultMatchers.jsonPath("amount", CoreMatchers.`is`(100.0)))
+            .andExpect(MockMvcResultMatchers.jsonPath("balance", CoreMatchers.`is`(100.0)))
 
         assertAll(
-            { assertThat(capturedAccount.captured.amount).isEqualTo(100.0) },
+            { assertThat(capturedAccount.captured.balance).isEqualTo(100.0) },
             { assertThat(capturedAccount.captured.description).isNull() }
+        )
+    }
+
+    @Test
+    fun updateAccountBalance() {
+        val randomUUID = UUID.randomUUID()
+        every { accountService.updateAccount(any(), any()) } just runs
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/accounts/${randomUUID}/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer 1234")
+                .content(objectMapper.writeValueAsString(BalanceDto(balance = 2.0)))
+        )
+            .andExpect(MockMvcResultMatchers.status().isNoContent)
+
+        assertAll(
+            { verify(exactly = 1) { accountService.updateAccount(randomUUID, 2.0) } }
+        )
+    }
+
+    @Test
+    fun editAccount() {
+        val capturedAccount = slot<Account>()
+        val randomUUID = UUID.randomUUID()
+        val accountDto = AccountDtoFixture.accountDto(balance = 100.0)
+        every { accountService.editAccount(any(), capture(capturedAccount)) } just runs
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/accounts/${randomUUID}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer 1234")
+                .content(objectMapper.writeValueAsString(accountDto))
+        )
+            .andExpect(MockMvcResultMatchers.status().isNoContent)
+
+        assertAll(
+            { assertThat(capturedAccount.captured.balance).isEqualTo(100.0) },
+            { assertThat(capturedAccount.captured.description).isNull() },
+            { verify(exactly = 1) { accountService.editAccount(randomUUID, any()) } }
         )
     }
 }
