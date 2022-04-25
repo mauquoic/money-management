@@ -1,5 +1,7 @@
 package com.mauquoi.moneymanagement.moneymanagement.domain.entities
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
+import com.google.api.client.json.webtoken.JsonWebSignature
 import java.util.*
 
 class UserFixture {
@@ -28,6 +30,21 @@ class UserFixture {
             return UserPreferences(
                 id = id, locale = locale, darkMode = darkMode, currency = currency
             )
+        }
+
+        fun googleToken(
+            email: String = "me@mail.com",
+            name: String = "Cédric Mauquoi",
+            firstName: String = "Cédric",
+            lastName: String = "Mauquoi"
+        ): GoogleIdToken {
+            val payload = GoogleIdToken.Payload()
+            payload.email = email
+            payload["email"] = email
+            payload["name"] = name
+            payload["given_name"] = firstName
+            payload["family_name"] = lastName
+            return GoogleIdToken(JsonWebSignature.Header(), payload, byteArrayOf(), byteArrayOf())
         }
     }
 }

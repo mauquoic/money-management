@@ -20,12 +20,19 @@ data class User(
     @Column(name = "firstName") val firstName: String? = null,
     @Column(name = "lastName") val lastName: String? = null,
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "user")
-    val accounts: MutableList<Account> = arrayListOf()
+    val accounts: MutableList<Account> = arrayListOf(),
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "user")
+    val cryptoPositions: MutableList<CryptoPosition> = arrayListOf()
 ) {
 
     fun addAccount(account: Account) {
         account.user = this
         this.accounts.add(account)
+    }
+
+    fun addCryptoPosition(cryptoPosition: CryptoPosition) {
+        cryptoPosition.user = this
+        this.cryptoPositions.add(cryptoPosition)
     }
 
     fun toUserDetails(): UserDetails {
@@ -45,7 +52,6 @@ data class User(
     override fun toString(): String {
         return "User(id=$id, email='$email', username=$username, firstName=$firstName, lastName=$lastName)"
     }
-
 
 }
 

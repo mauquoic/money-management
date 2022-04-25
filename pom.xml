@@ -148,6 +148,12 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>**/AppWebSecurityConfigurerAdapterLocal*.*</exclude>
+						<exclude>**/MockSecurityConfiguration*.*</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 <!--			todo remove this specification once MockK is updated and unmockkStatic(SecurityContextHolder::class) actually works -->
 			<plugin>

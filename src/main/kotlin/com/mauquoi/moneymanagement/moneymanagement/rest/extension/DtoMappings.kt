@@ -1,13 +1,7 @@
 package com.mauquoi.moneymanagement.moneymanagement.rest.extension
 
-import com.mauquoi.moneymanagement.moneymanagement.domain.entities.Account
-import com.mauquoi.moneymanagement.moneymanagement.domain.entities.AccountSnapshot
-import com.mauquoi.moneymanagement.moneymanagement.domain.entities.User
-import com.mauquoi.moneymanagement.moneymanagement.domain.entities.UserPreferences
-import com.mauquoi.moneymanagement.moneymanagement.rest.dto.AccountDto
-import com.mauquoi.moneymanagement.moneymanagement.rest.dto.AccountSnapshotDto
-import com.mauquoi.moneymanagement.moneymanagement.rest.dto.PreferencesDto
-import com.mauquoi.moneymanagement.moneymanagement.rest.dto.UserDto
+import com.mauquoi.moneymanagement.moneymanagement.domain.entities.*
+import com.mauquoi.moneymanagement.moneymanagement.rest.dto.*
 
 fun Account.toDto() = AccountDto(
     id = this.id,
@@ -32,6 +26,34 @@ fun AccountSnapshot.toDto() = AccountSnapshotDto(
     validFrom = this.validFrom,
     validTo = this.validTo
 )
+
+fun CryptoPosition.toDto() = CryptoPositionDto(
+    id = this.id!!,
+    name = this.name,
+    amount = this.amount,
+    description = this.description,
+    addedOn = this.addedOn,
+    editedOn = this.editedOn,
+    positionSnapshots = this.positionSnapshots.map { it.toDto() }
+)
+
+fun CryptoPositionDto.toDomain() = CryptoPosition(
+    name = this.name,
+    amount = this.amount,
+    description = this.description
+)
+
+fun CryptoPositionSnapshot.toDto(): CryptoPositionSnapshotDto {
+    val (id, startAmount, endAmount, startDate, endDate, _, type) = this
+    return CryptoPositionSnapshotDto(
+        id = id,
+        startAmount = startAmount,
+        endAmount = endAmount,
+        startDate = startDate,
+        increase = endAmount - startAmount,
+        endDate = endDate, type = type
+    )
+}
 
 fun UserDto.toDomain() = User(
     email = this.email,

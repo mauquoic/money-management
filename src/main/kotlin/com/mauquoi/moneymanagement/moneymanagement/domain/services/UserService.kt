@@ -33,7 +33,7 @@ class UserService @Inject constructor(private val userRepository: UserRepository
         userRepository.findUserByEmail(payload.email) ?: userRepository.save(
             User(
                 email = payload.email,
-                username = payload["name"]?.toString(),
+                username = payload.email,
                 firstName = payload["given_name"]?.toString(),
                 lastName = payload["family_name"]?.toString()
             )
