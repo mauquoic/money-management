@@ -10,7 +10,6 @@ import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDomain
 import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.inject.Inject
@@ -27,18 +26,23 @@ class AccountController @Inject constructor(private val accountService: AccountS
 
     @GetMapping(ACCOUNTS)
     fun getAccounts(): ResponseEntity<List<AccountDto>> {
-        println(SecurityContextHolder.getContext().authentication)
         return ResponseEntity.ok(accountService.getAccounts().map { it.toDto() })
     }
 
     @PutMapping(ACCOUNT_BY_ID)
-    fun editAccount(@PathVariable(ACCOUNT_ID) accountId: UUID, @RequestBody accountDto: AccountDto): ResponseEntity<Nothing> {
+    fun editAccount(
+        @PathVariable(ACCOUNT_ID) accountId: UUID,
+        @RequestBody accountDto: AccountDto
+    ): ResponseEntity<Nothing> {
         accountService.editAccount(accountId, accountDto.toDomain())
         return ResponseEntity.noContent().build()
     }
 
     @PostMapping("$ACCOUNT_BY_ID/update")
-    fun updateAccount(@PathVariable(ACCOUNT_ID) accountId: UUID, @RequestBody balanceDto: BalanceDto): ResponseEntity<Nothing> {
+    fun updateAccount(
+        @PathVariable(ACCOUNT_ID) accountId: UUID,
+        @RequestBody balanceDto: BalanceDto
+    ): ResponseEntity<Nothing> {
         accountService.updateAccount(accountId, balanceDto.balance)
         return ResponseEntity.noContent().build()
     }

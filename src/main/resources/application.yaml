@@ -13,6 +13,6 @@ spring:
   error:
     include-message: always
 
-logging:
-  level:
-    com.google.api.client: DEBUG
+service:
+  coingecko:
+    base-url: https://api.coingecko.com/api/v3

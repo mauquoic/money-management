@@ -71,10 +71,11 @@ internal class AccountServiceTest {
         val account = AccountFixture.account()
         every { userService.getLoggedInUser() } returns UserFixture.user()
         every { accountRepository.save(any()) } returns account
+
         accountService.createAccount(account)
 
         assertAll(
-            { verify(exactly = 1) { accountRepository.save(account) } }
+            { verify(exactly = 1) { accountRepository.save(any()) } }
         )
     }
 
@@ -109,7 +110,7 @@ internal class AccountServiceTest {
             { assertThat(capturedAccount.captured.balance).isEqualTo(2.0) },
             { assertThat(capturedAccount.captured.id).isEqualTo(account.id) },
             { assertThat(capturedAccount.captured.accountSnapshots[0].balance).isEqualTo(1000.0) },
-            { assertThat(capturedAccount.captured.accountSnapshots).hasSize(1) }
+            { assertThat(capturedAccount.captured.accountSnapshots.size).isEqualTo(1) }
         )
     }
 }

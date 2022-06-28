@@ -1,7 +1,5 @@
 package com.mauquoi.moneymanagement.moneymanagement.domain.services
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
-import com.google.api.client.json.webtoken.JsonWebSignature
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.User
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.UserFixture
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.UserFixture.Companion.preferences
@@ -14,9 +12,7 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -68,11 +64,13 @@ internal class UserServiceTest {
         every { userRepository.findById(any()) } returns Optional.empty()
         assertThrows<UserNotFoundException> { userService.getUser(UUID.randomUUID()) }
     }
+
     @Test
     fun loadUser_notFound_exceptionIsThrown() {
         every { userRepository.findUserByEmail(any()) } returns null
         assertThrows<UserNotFoundException> { userService.loadUserByUsername("me@mail.com") }
     }
+
     @Test
     fun loadUser_found() {
         every { userRepository.findUserByEmail(any()) } returns user()
@@ -130,6 +128,7 @@ internal class UserServiceTest {
             { assertThat(updatedUser.captured.preferences.currency).isEqualTo(Currency.getInstance("USD")) }
         )
     }
+
     @Test
     fun loginGoogleUser() {
         every { userRepository.findUserByEmail(any()) } returns user()
@@ -141,6 +140,7 @@ internal class UserServiceTest {
             { verify(exactly = 0) { userRepository.save(any()) } }
         )
     }
+
     @Test
     fun loginGoogleUser_notExisting_created() {
         val user = slot<User>()
@@ -159,4 +159,5 @@ internal class UserServiceTest {
             { assertThat(user.captured.preferences.locale).isEqualTo(Locale.UK) },
         )
     }
+
 }

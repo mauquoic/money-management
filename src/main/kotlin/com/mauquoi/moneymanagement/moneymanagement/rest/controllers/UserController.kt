@@ -9,7 +9,6 @@ import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDomain
 import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.inject.Inject
@@ -47,7 +46,6 @@ class UserController @Inject constructor(
     ): ResponseEntity<Nothing> {
         val idToken: GoogleIdToken = googleIdTokenVerifier.verify(idTokenString.substring(7))
         userService.loginGoogleUser(idToken)
-        println("Logged in user: " + SecurityContextHolder.getContext().authentication)
         return ResponseEntity.noContent().build()
     }
 }

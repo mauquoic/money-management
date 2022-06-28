@@ -18,7 +18,6 @@ import javax.inject.Inject
 @RestController
 @CrossOrigin
 class CryptoController @Inject constructor(private val cryptoPositionService: CryptoService) {
-
     @GetMapping(CRYPTO_BY_ID)
     fun getCryptoPosition(@PathVariable(CRYPTO_ID) cryptoPositionId: UUID): ResponseEntity<CryptoPositionDto> {
         return ResponseEntity.ok(cryptoPositionService.getCryptoPosition(cryptoPositionId).toDto())

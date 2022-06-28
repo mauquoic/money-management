@@ -22,7 +22,7 @@ class AppWebSecurityConfigurerAdapterLocal @Inject constructor(
     WebSecurityConfigurerAdapter() {
 
     override fun configure(web: WebSecurity?) {
-        web?.ignoring()?.antMatchers("/actuator/*", "/users", "/users/**", "/error/**")
+        web?.ignoring()?.antMatchers("/actuator/*", "/users", "/users/**", "/error/**", "/stubs/**", "/cryptos/assets/**")
     }
 
     override fun configure(http: HttpSecurity) {

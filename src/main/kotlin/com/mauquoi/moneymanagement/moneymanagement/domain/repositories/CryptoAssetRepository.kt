@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository
 interface CryptoAssetRepository: JpaRepository<CryptoAsset, String> {
 
     fun findBySymbol(symbol: String): CryptoAsset?
+
+    fun findAllByOrderByMarketCapRank(): List<CryptoAsset>
 }

@@ -13,9 +13,23 @@ class AccountFixture {
             currency: Currency = Currency.getInstance("USD"),
             balance: Double = 1000.0,
             addedOn: LocalDate = LocalDate.now(),
-            user: User = UserFixture.user()
+            user: User = UserFixture.user(),
+            containsSnapshot: Boolean = false
         ): Account {
-            return Account(id = id, name = name, description = description, currency = currency, balance = balance, addedOn = addedOn, user = user)
+            val account = Account(
+                id = id,
+                name = name,
+                description = description,
+                currency = currency,
+                balance = balance,
+                addedOn = addedOn,
+                user = user
+            )
+            if (containsSnapshot) {
+                val snapshot = AccountSnapshotFixture.snapshot(account = account)
+                account.accountSnapshots.add(snapshot)
+            }
+            return account
         }
     }
 }

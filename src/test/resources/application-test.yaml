@@ -8,3 +8,7 @@ spring:
 server:
   error:
     include-message: always
+
+service:
+  coingecko:
+    base-url: http://localhost:12345
