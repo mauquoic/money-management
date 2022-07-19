@@ -50,7 +50,7 @@ jobs:
       - name: Run integration tests
         run: |
           echo "---------- Running image ----------"
-          docker run --name money-management \
+          docker run --name money-management:latest \
                      -p 8080:8080 \
                      -e spring.profiles.active=postman \
                      -d \
