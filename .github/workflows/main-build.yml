@@ -50,11 +50,11 @@ jobs:
       - name: Run integration tests
         run: |
           echo "---------- Running image ----------"
-          docker run --name money-management:latest \
+          docker run --name money-management \
                      -p 8080:8080 \
                      -e spring.profiles.active=postman \
                      -d \
-                    mauquoic/money-management
+                    mauquoic/money-management:latest
           echo "---------- Image started ----------"
           echo "---------- Running postman tests ----------"
           newman run src/test/resources/application-tests.json --env-var accessToken=987654329876543
