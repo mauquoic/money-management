@@ -52,7 +52,7 @@ jobs:
           echo "---------- Running image ----------"
           docker run --name money-management \
                      -p 8080:8080 \
-                     -e spring.profiles.active=postman \
+                     -e spring.profiles.active=postman,test-pipeline \
                      -d \
                     mauquoic/money-management:latest
           echo "---------- Image started ----------"
