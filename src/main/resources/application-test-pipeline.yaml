@@ -4,7 +4,6 @@ spring:
   security:
     type: mocked
 
-
 server:
   error:
     include-message: always
