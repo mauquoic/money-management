@@ -16,3 +16,4 @@ spring:
 service:
   coingecko:
     base-url: https://api.coingecko.com/api/v3
+    pages: 8

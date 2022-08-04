@@ -11,4 +11,5 @@ server:
 
 service:
   coingecko:
-    base-url: http://localhost:12345
+    base-url: https://yakman.free.beeceptor.com/
+    pages: 1

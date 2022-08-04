@@ -1,7 +1,7 @@
 package com.mauquoi.moneymanagement.moneymanagement.gateways
 
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.CryptoAsset
-import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.CryptoAssetDto
+import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.CoinGeckoCryptoAssetDto
 import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.CryptoAssetDtoFixture.Companion.cryptoList
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -39,7 +39,7 @@ internal class CoinGeckoGatewayTest {
         every { webClient.get() } returns requestBodyUriSpec
         every { requestBodyUriSpec.uri(any<java.util.function.Function<UriBuilder, URI>>()) } returns requestBodySpec
         every { requestBodySpec.retrieve() } returns responseSpec
-        every { responseSpec.bodyToFlux(CryptoAssetDto::class.java) } returns Flux.fromIterable(cryptoList())
+        every { responseSpec.bodyToFlux(CoinGeckoCryptoAssetDto::class.java) } returns Flux.fromIterable(cryptoList())
 
         val greatestCoins = coinGeckoGateway.loadGreatestCoins(0)
         val coinsAsList = greatestCoins.collectList().block()

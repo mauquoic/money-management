@@ -79,3 +79,9 @@ fun PreferencesDto.toDomain() = UserPreferences(
     darkMode = this.darkMode
 )
 
+fun CryptoAsset.toDto() = CryptoAssetDto(
+    symbol = this.symbol,
+    price = this.latestPrice,
+    name = this.name,
+    id = this.id
+)

@@ -8,8 +8,8 @@ class CryptoAssetDtoFixture {
             name: String = "Bitcoin",
             price: Double = 10.0,
             marketCapRank: Int = 1
-        ): CryptoAssetDto {
-            return CryptoAssetDto(
+        ): CoinGeckoCryptoAssetDto {
+            return CoinGeckoCryptoAssetDto(
                 id = id,
                 name = name,
                 symbol = symbol,
@@ -18,7 +18,7 @@ class CryptoAssetDtoFixture {
             )
         }
 
-        fun cryptoList(): List<CryptoAssetDto> {
+        fun cryptoList(): List<CoinGeckoCryptoAssetDto> {
             return listOf(
                 cryptoAssetDto(),
                 cryptoAssetDto(id = "ETH", symbol = "ETH", marketCapRank = 2, price = 5.0, name = "Ethereum"),

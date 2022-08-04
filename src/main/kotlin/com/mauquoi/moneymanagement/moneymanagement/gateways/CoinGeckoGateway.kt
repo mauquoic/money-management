@@ -1,7 +1,7 @@
 package com.mauquoi.moneymanagement.moneymanagement.gateways
 
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.CryptoAsset
-import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.CryptoAssetDto
+import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.CoinGeckoCryptoAssetDto
 import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.toDomain
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -24,7 +24,7 @@ class CoinGeckoGateway @Inject constructor(private val coinGeckoWebClient: WebCl
                 .build()
         }
             .retrieve()
-            .bodyToFlux(CryptoAssetDto::class.java)
+            .bodyToFlux(CoinGeckoCryptoAssetDto::class.java)
             .map { it.toDomain() }
             .share()
     }

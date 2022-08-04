@@ -14,11 +14,13 @@ data class CryptoAsset(
     @Column(name = "symbol", nullable = false) val symbol: String,
     @Column(name = "name", nullable = false) val name: String,
     @Column(name = "marketCapRank", nullable = false) val marketCapRank: Int,
+    @Column(name = "latestPrice", nullable = false) val latestPrice: Double,
     @Transient @JsonIgnore var price: Double,
     @OneToMany(
         cascade = [CascadeType.ALL],
         orphanRemoval = true,
-        mappedBy = "asset"
+        mappedBy = "asset",
+        fetch = FetchType.LAZY
     ) val priceHistory: MutableList<CryptoAssetPrice> = mutableListOf()
 ) {
 
