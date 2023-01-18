@@ -17,3 +17,6 @@ service:
   coingecko:
     base-url: https://api.coingecko.com/api/v3
     pages: 8
+  currency:
+    base-url: https://api.apilayer.com/exchangerates_data
+    apikey: 38cqXGrl7rUejuVWJSsE5kXkwafs689H

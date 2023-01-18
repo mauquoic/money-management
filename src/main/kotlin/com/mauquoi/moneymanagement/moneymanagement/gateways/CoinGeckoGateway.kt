@@ -2,14 +2,17 @@ package com.mauquoi.moneymanagement.moneymanagement.gateways
 
 import com.mauquoi.moneymanagement.moneymanagement.domain.entities.CryptoAsset
 import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.CoinGeckoCryptoAssetDto
-import com.mauquoi.moneymanagement.moneymanagement.gateways.dto.toDomain
+import com.mauquoi.moneymanagement.moneymanagement.mappers.CryptoAssetMapper
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
 import javax.inject.Inject
 
 @Component
-class CoinGeckoGateway @Inject constructor(private val coinGeckoWebClient: WebClient) {
+class CoinGeckoGateway @Inject constructor(
+    private val coinGeckoWebClient: WebClient,
+    private val cryptoAssetMapper: CryptoAssetMapper
+) {
 
     fun loadGreatestCoins(page: Int): Flux<CryptoAsset> {
 
@@ -25,7 +28,7 @@ class CoinGeckoGateway @Inject constructor(private val coinGeckoWebClient: WebCl
         }
             .retrieve()
             .bodyToFlux(CoinGeckoCryptoAssetDto::class.java)
-            .map { it.toDomain() }
+            .map { cryptoAssetMapper.toDomain(it) }
             .share()
     }
 }

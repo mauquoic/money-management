@@ -57,7 +57,7 @@ data class User(
 
 @Entity
 @Table(name = "preferences")
-class UserPreferences(
+data class UserPreferences(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,

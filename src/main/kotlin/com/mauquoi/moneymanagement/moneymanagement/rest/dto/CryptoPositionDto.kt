@@ -10,9 +10,11 @@ data class CryptoPositionDto(
     val id: UUID? = null,
     @NotNull val name: String,
     @NotNull val amount: Double,
+    val value: ValueDto? = null,
     val description: String? = null,
     val addedOn: LocalDate? = null,
     val editedOn: LocalDate? = null,
+    val assetSymbol: String,
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     val positionSnapshots: List<CryptoPositionSnapshotDto> = listOf()
 )

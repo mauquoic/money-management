@@ -43,6 +43,26 @@ class WebClientConfiguration {
     }
 
     @Bean
+    fun currencyConversionWebClient(@Value("\${service.currency.base-url}") baseUrl: String,
+                                    @Value("\${service.currency.apikey}") apikey: String): WebClient {
+        return WebClient.builder()
+            .baseUrl(baseUrl)
+            .filter(logRequest())
+            .filter(logResponse())
+            .clientConnector(ReactorClientHttpConnector(httpClient()))
+            .codecs { configurer ->
+                configurer
+                    .defaultCodecs()
+                    .maxInMemorySize(16 * 1024 * 1024)
+            }
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader(HttpHeaders.ACCEPT, "${MediaType.APPLICATION_JSON}")
+            .defaultHeader(HttpHeaders.ACCEPT_CHARSET, StandardCharsets.UTF_8.toString())
+            .defaultHeader("apikey", apikey)
+            .build()
+    }
+
+    @Bean
     fun httpClient(): HttpClient {
         return HttpClient.create()
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)

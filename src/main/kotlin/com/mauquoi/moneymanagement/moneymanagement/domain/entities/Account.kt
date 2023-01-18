@@ -1,5 +1,6 @@
 package com.mauquoi.moneymanagement.moneymanagement.domain.entities
 
+import com.mauquoi.moneymanagement.moneymanagement.domain.models.AccountType
 import org.hibernate.annotations.GenericGenerator
 import java.time.LocalDate
 import java.util.*
@@ -15,7 +16,9 @@ data class Account(
     @Column(name = "name", nullable = false) val name: String,
     @Column(name = "balance", nullable = false) val balance: Double,
     @Column(name = "currency", nullable = false) val currency: Currency,
+    @Column(name = "liquid", nullable = false) val liquid: Boolean = true,
     @Column(name = "description") val description: String? = null,
+    @Column(name = "type", nullable = false) @Enumerated(value = EnumType.STRING) val type: AccountType = AccountType.UNDEFINED,
     @Column(name = "added_on", nullable = false) val addedOn: LocalDate = LocalDate.now(),
     @Column(name = "edited_on", nullable = false) val editedOn: LocalDate = LocalDate.now(),
     @ManyToOne(fetch = FetchType.LAZY) var user: User? = null,

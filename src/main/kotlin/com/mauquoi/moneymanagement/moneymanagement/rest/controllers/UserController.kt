@@ -3,10 +3,10 @@ package com.mauquoi.moneymanagement.moneymanagement.rest.controllers
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.mauquoi.moneymanagement.moneymanagement.domain.services.UserService
+import com.mauquoi.moneymanagement.moneymanagement.mappers.UserMapper
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.PreferencesDto
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.UserDto
 import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDomain
-import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -19,7 +19,8 @@ import javax.inject.Inject
 @CrossOrigin
 class UserController @Inject constructor(
     private val userService: UserService,
-    private val googleIdTokenVerifier: GoogleIdTokenVerifier
+    private val googleIdTokenVerifier: GoogleIdTokenVerifier,
+    private val userMapper: UserMapper
 ) {
 
     @PostMapping
@@ -29,7 +30,7 @@ class UserController @Inject constructor(
 
     @GetMapping("/me")
     fun getUser(): ResponseEntity<UserDto> {
-        return ResponseEntity.ok(userService.getLoggedInUser().toDto())
+        return ResponseEntity.ok(userMapper.toDto(userService.getLoggedInUser()))
     }
 
     @PutMapping("/me/preferences")

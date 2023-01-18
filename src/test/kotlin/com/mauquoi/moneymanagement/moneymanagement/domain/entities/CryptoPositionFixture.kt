@@ -15,7 +15,8 @@ class CryptoPositionFixture {
             editedOn: LocalDate = LocalDate.now(),
             user: User = UserFixture.user(),
             newBalance: Double = 1100.0,
-            type: ChangeType = ChangeType.STAKING
+            type: ChangeType = ChangeType.STAKING,
+            asset: CryptoAsset = CryptoAssetFixture.cryptoAsset()
         ): CryptoPosition {
             val position = CryptoPosition(
                 id = id,
@@ -25,6 +26,7 @@ class CryptoPositionFixture {
                 editedOn = editedOn,
                 addedOn = addedOn,
                 user = user,
+                asset = asset
             )
             position.positionSnapshots.add(CryptoPositionSnapshotFixture.positionSnapshot(cryptoPosition = position, endAmount = newBalance, type = type))
             return position

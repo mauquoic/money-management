@@ -16,8 +16,10 @@ data class CryptoPosition(
     @Column(name = "name", nullable = false) val name: String,
     @Column(name = "amount", nullable = false) val amount: Double,
     @Column(name = "description") val description: String? = null,
-    @Column(name = "added_on", nullable = false) val addedOn: LocalDate = LocalDate.now(),
-    @Column(name = "edited_on", nullable = false) val editedOn: LocalDate = LocalDate.now(),
+    @Column(name = "added_on", nullable = false) val addedOn: LocalDate,
+    @Column(name = "edited_on", nullable = false) val editedOn: LocalDate,
+    @ManyToOne(fetch = FetchType.LAZY)
+    val asset: CryptoAsset,
     @ManyToOne(fetch = FetchType.LAZY) var user: User? = null,
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "cryptoPosition")
     val positionSnapshots: MutableList<CryptoPositionSnapshot> = mutableListOf()

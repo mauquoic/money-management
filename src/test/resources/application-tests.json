@@ -219,6 +219,8 @@
 									"    pm.expect(jsonData).to.have.property(\"id\");",
 									"    pm.expect(jsonData.name).to.eql(\"MyFirstAccount\");",
 									"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
+									"    pm.expect(jsonData.type).to.eql(\"CASH\");",
+									"    pm.expect(jsonData.liquid).to.eql(true);",
 									"});",
 									"pm.environment.set(\"account_id\", pm.response.json().id);"
 								],
@@ -234,7 +236,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"balance\": 2200,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\"\n}",
+							"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"balance\": 2200,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\",\n    \"liquid\": true,\n    \"type\": \"CASH\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -273,6 +275,8 @@
 									"    pm.expect(jsonData.name).to.eql(\"MyFirstAccount\");",
 									"    pm.expect(jsonData.balance).to.eql(2200.0);",
 									"    pm.expect(jsonData.currency).to.eql(\"EUR\");",
+									"    pm.expect(jsonData.type).to.eql(\"CASH\");",
+									"    pm.expect(jsonData.liquid).to.eql(true);",
 									"    pm.expect(jsonData.snapshots).to.be.undefined;",
 									"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
 									"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
@@ -363,6 +367,8 @@
 									"    pm.expect(jsonData.currency).to.eql(\"EUR\");",
 									"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
 									"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.type).to.eql(\"CASH\");",
+									"    pm.expect(jsonData.liquid).to.eql(true);",
 									"    pm.expect(jsonData.snapshots.length).to.eql(1);",
 									"    pm.expect(jsonData.snapshots[0].balance).to.eql(2200.0);",
 									"    pm.expect(jsonData.snapshots[0].validFrom).to.eql(moment().format((\"YYYY-MM-DD\")));",
@@ -411,7 +417,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"MyFirstAccountEdited\",\n    \"balance\": 2300,\n    \"currency\": \"USD\",\n    \"description\": \"This has been edited\"\n}",
+							"raw": "{\n    \"name\": \"MyFirstAccountEdited\",\n    \"balance\": 2300,\n    \"currency\": \"USD\",\n    \"description\": \"This has been edited\",\n    \"type\": \"PENSION_FUND\",\n    \"liquid\": false\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -451,6 +457,8 @@
 									"    pm.expect(jsonData.name).to.eql(\"MyFirstAccountEdited\");",
 									"    pm.expect(jsonData.balance).to.eql(2300.0);",
 									"    pm.expect(jsonData.currency).to.eql(\"USD\");",
+									"    pm.expect(jsonData.type).to.eql(\"PENSION_FUND\");",
+									"    pm.expect(jsonData.liquid).to.eql(false);",
 									"    pm.expect(jsonData.description).to.eql(\"This has been edited\");",
 									"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
 									"    pm.expect(jsonData.snapshots.length).to.eql(1);",
@@ -528,6 +536,8 @@
 									"    pm.expect(jsonData.name).to.eql(\"MySecondAccount\");",
 									"    pm.expect(jsonData.balance).to.eql(220);",
 									"    pm.expect(jsonData.currency).to.eql(\"CHF\");",
+									"    pm.expect(jsonData.type).to.eql(\"UNDEFINED\");",
+									"    pm.expect(jsonData.liquid).to.eql(true);",
 									"    pm.expect(jsonData.description).to.be.null;",
 									"});"
 								],
@@ -659,6 +669,48 @@
 					]
 				},
 				{
+					"name": "Fill rates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "apikey",
+								"value": "38cqXGrl7rUejuVWJSsE5kXkwafs689H",
+								"type": "text"
+							},
+							{
+								"key": "access_key",
+								"value": "38cqXGrl7rUejuVWJSsE5kXkwafs689H",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/stubs/currency-rates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"stubs",
+								"currency-rates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get crypto options",
 					"event": [
 						{
@@ -711,16 +763,24 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"var moment = require('moment');",
+									"",
 									"pm.test(\"Status code is 201\", function () {",
 									"    pm.response.to.have.status(201);",
 									"});",
-									"pm.test(\"Account has correct information.\", function () {",
+									"pm.test(\"Position has correct information.\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.have.property(\"id\");",
-									"    pm.expect(jsonData.name).to.eql(\"MyFirstAccount\");",
-									"    pm.expect(jsonData.description).to.eql(\"I am so proud to have my own money!!\");",
+									"    pm.expect(jsonData.name).to.eql(\"BTC account\");",
+									"    pm.expect(jsonData.amount).to.eql(1.0);",
+									"    pm.expect(jsonData.description).to.be.null;",
+									"    pm.expect(jsonData.value.value).to.be.not.null;",
+									"    pm.expect(jsonData.value.currency).to.be.not.null;",
+									"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.editedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.assetSymbol).to.eql(\"BTC\");",
 									"});",
-									"pm.environment.set(\"account_id\", pm.response.json().id);"
+									"pm.environment.set(\"position_id\", pm.response.json().id);"
 								],
 								"type": "text/javascript"
 							}
@@ -730,11 +790,61 @@
 						"disabledSystemHeaders": {}
 					},
 					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "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",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.google.com/o/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.google.com/o/oauth2/auth",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "googleOAuth",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"MyFirstAccount\",\n    \"balance\": 2200,\n    \"currency\": \"EUR\",\n    \"description\": \"I am so proud to have my own money!!\"\n}",
+							"raw": "{\n    \"name\": \"BTC account\",\n    \"amount\": 1,\n    \"assetSymbol\": \"BTC\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -742,14 +852,648 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/accounts",
+							"raw": "http://localhost:8080/cryptos",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"accounts"
+								"cryptos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get crypto position",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var moment = require('moment');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Position has correct information.\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData.name).to.eql(\"BTC account\");",
+									"    pm.expect(jsonData.description).to.be.null;",
+									"    pm.expect(jsonData.value.value).to.be.not.null;",
+									"    pm.expect(jsonData.value.currency).to.be.not.null;",
+									"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.editedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.assetSymbol).to.eql(\"BTC\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "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",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.google.com/o/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.google.com/o/oauth2/auth",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "googleOAuth",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"BTC account\",\n    \"amount\": 1,\n    \"assetSymbol\": \"BTC\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cryptos/{{position_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cryptos",
+								"{{position_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update position new balance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "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",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.google.com/o/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.google.com/o/oauth2/auth",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "googleOAuth",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"newBalance\": \"1.1\",\n    \"changeType\": \"LENDING_REWARD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cryptos/{{position_id}}/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cryptos",
+								"{{position_id}}",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update position increase",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "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",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.google.com/o/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.google.com/o/oauth2/auth",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "googleOAuth",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"increase\": \".02\",\n    \"changeType\": \"STAKING\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cryptos/{{position_id}}/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cryptos",
+								"{{position_id}}",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get crypto positions after update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var moment = require('moment');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Position has correct information.\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData.name).to.eql(\"BTC account\");",
+									"    pm.expect(jsonData.amount).to.eql(1.12);",
+									"    pm.expect(jsonData.description).to.be.null;",
+									"    pm.expect(jsonData.value.value).to.be.not.null;",
+									"    pm.expect(jsonData.value.currency).to.be.not.null;",
+									"    pm.expect(jsonData.addedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.editedOn).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.assetSymbol).to.eql(\"BTC\");",
+									"});",
+									"pm.test(\"Position has correct snapshots.\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.positionSnapshots).to.have.length(2);",
+									"    pm.expect(jsonData.positionSnapshots[0]).to.have.property(\"id\");",
+									"    pm.expect(jsonData.positionSnapshots[0].startAmount).to.eql(1.0);",
+									"    pm.expect(jsonData.positionSnapshots[0].endAmount).to.eql(1.1);",
+									"    pm.expect(jsonData.positionSnapshots[0].type).to.eql(\"LENDING_REWARD\");",
+									"    pm.expect(jsonData.positionSnapshots[0].startDate).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.positionSnapshots[0].endDate).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"",
+									"    pm.expect(jsonData.positionSnapshots[1].startAmount).to.eql(1.1);",
+									"    pm.expect(jsonData.positionSnapshots[1].endAmount).to.eql(1.12);",
+									"    pm.expect(jsonData.positionSnapshots[1].type).to.eql(\"STAKING\");",
+									"    pm.expect(jsonData.positionSnapshots[1].startDate).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"    pm.expect(jsonData.positionSnapshots[1].endDate).to.eql(moment().format((\"YYYY-MM-DD\")));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "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",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.google.com/o/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.google.com/o/oauth2/auth",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "googleOAuth",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"BTC account\",\n    \"amount\": 1,\n    \"assetSymbol\": \"BTC\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cryptos/{{position_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cryptos",
+								"{{position_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add second crypto position",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var moment = require('moment');",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test(\"Position has correct information.\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData.name).to.eql(\"BNB account\");",
+									"    pm.expect(jsonData.amount).to.eql(12.0);",
+									"    pm.expect(jsonData.description).to.eql(\"BNB rules\");",
+									"    pm.expect(jsonData.assetSymbol).to.eql(\"BNB\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "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",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.google.com/o/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.google.com/o/oauth2/auth",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "googleOAuth",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"BNB account\",\n    \"amount\": 12,\n    \"assetSymbol\": \"BNB\",\n    \"description\": \"BNB rules\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cryptos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cryptos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get crypto positions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var moment = require('moment');",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Position has correct information.\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.length(2);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "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",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "483156270467-2ccj56shc5sqpsrietctikeueglhfh6u.apps.googleusercontent.com",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.google.com/o/oauth2/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.google.com/o/oauth2/auth",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "googleOAuth",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cryptos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cryptos"
 							]
 						}
 					},

@@ -5,12 +5,14 @@ class CryptoPositionDtoFixture {
         fun cryptoPositionDto(
             name: String = "name",
             description: String? = null,
-            amount: Double = 1000.0
+            amount: Double = 1000.0,
+            assetSymbol: String = "BTC"
         ): CryptoPositionDto {
             return CryptoPositionDto(
                 name = name,
                 amount = amount,
-                description = description
+                description = description,
+                assetSymbol = assetSymbol
             )
         }
     }

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1660482661374-2" author="cedric (generated)">
+        <createTable tableName="account_snapshot">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_account_snapshot"/>
+            </column>
+            <column name="balance" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_from" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_to" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1660482661374-3" author="cedric (generated)">
+        <createTable tableName="crypto_asset">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crypto_asset"/>
+            </column>
+            <column name="symbol" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="market_cap_rank" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latest_price" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1660482661374-4" author="cedric (generated)">
+        <createTable tableName="crypto_asset_price">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crypto_asset_price"/>
+            </column>
+            <column name="asset_id" type="VARCHAR(255)"/>
+            <column name="date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1660482661374-5" author="cedric (generated)">
+        <createTable tableName="crypto_position">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crypto_position"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="added_on" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="edited_on" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1660482661374-6" author="cedric (generated)">
+        <createTable tableName="crypto_position_snapshot">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_crypto_position_snapshot"/>
+            </column>
+            <column name="start_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="crypto_position_id" type="UUID"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1660482661374-7" author="cedric (generated)">
+        <createTable tableName="currency_exchange">
+            <column name="date" type="DATE">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_currency_exchange"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1660482661374-8" author="cedric (generated)">
+        <createTable tableName="currency_mapping">
+            <column name="date" type="DATE">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_currency_mapping"/>
+            </column>
+            <column name="value" type="DOUBLE"/>
+            <column name="currency_conversion" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_currency_mapping"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1660482661374-9" author="cedric (generated)">
+        <addColumn tableName="account">
+            <column name="balance" type="DOUBLE"/>
+            <column name="edited_on" type="DATE"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1660482661374-10" author="cedric (generated)">
+        <addNotNullConstraint columnName="balance" tableName="account"/>
+    </changeSet>
+    <changeSet id="1660482661374-12" author="cedric (generated)">
+        <addNotNullConstraint columnName="edited_on" tableName="account"/>
+    </changeSet>
+    <changeSet id="1660482661374-13" author="cedric (generated)">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="account_snapshot"
+                                 constraintName="FK_ACCOUNT_SNAPSHOT_ON_ACCOUNT" referencedColumnNames="id"
+                                 referencedTableName="account"/>
+    </changeSet>
+    <changeSet id="1660482661374-14" author="cedric (generated)">
+        <addForeignKeyConstraint baseColumnNames="asset_id" baseTableName="crypto_asset_price"
+                                 constraintName="FK_CRYPTO_ASSET_PRICE_ON_ASSET" referencedColumnNames="id"
+                                 referencedTableName="crypto_asset"/>
+    </changeSet>
+    <changeSet id="1660482661374-15" author="cedric (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="crypto_position"
+                                 constraintName="FK_CRYPTO_POSITION_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1660482661374-16" author="cedric (generated)">
+        <addForeignKeyConstraint baseColumnNames="crypto_position_id" baseTableName="crypto_position_snapshot"
+                                 constraintName="FK_CRYPTO_POSITION_SNAPSHOT_ON_CRYPTOPOSITION"
+                                 referencedColumnNames="id" referencedTableName="crypto_position"/>
+    </changeSet>
+    <changeSet id="1660482661374-17" author="cedric (generated)">
+        <addForeignKeyConstraint baseColumnNames="date" baseTableName="currency_mapping"
+                                 constraintName="fk_currency_mapping_on_currency_exchange" referencedColumnNames="date"
+                                 referencedTableName="currency_exchange"/>
+    </changeSet>
+    <changeSet id="1660482661374-18" author="cedric (generated)">
+        <dropColumn columnName="amount" tableName="account"/>
+    </changeSet>
+    <changeSet id="1660482661374-1" author="cedric (generated)">
+        <addNotNullConstraint columnDataType="BOOLEAN" columnName="dark_mode" tableName="preferences" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -9,5 +9,5 @@ data class CoinGeckoCryptoAssetDto(
     @JsonProperty("current_price")
     val price: Double,
     @JsonProperty("market_cap_rank")
-    val marketCapRank: Int
+    val marketCapRank: Int,
 )

@@ -1,13 +1,12 @@
 package com.mauquoi.moneymanagement.moneymanagement.rest.controllers
 
 import com.mauquoi.moneymanagement.moneymanagement.domain.services.CryptoService
+import com.mauquoi.moneymanagement.moneymanagement.mappers.CryptoPositionMapper
 import com.mauquoi.moneymanagement.moneymanagement.rest.constants.URL.CryptoUrl.CRYPTOS
 import com.mauquoi.moneymanagement.moneymanagement.rest.constants.URL.CryptoUrl.CRYPTO_BY_ID
 import com.mauquoi.moneymanagement.moneymanagement.rest.constants.URL.PathVariable.CRYPTO_ID
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.CryptoPositionDto
 import com.mauquoi.moneymanagement.moneymanagement.rest.dto.CryptoUpdateDto
-import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDomain
-import com.mauquoi.moneymanagement.moneymanagement.rest.extension.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,22 +16,26 @@ import javax.inject.Inject
 
 @RestController
 @CrossOrigin
-class CryptoController @Inject constructor(private val cryptoPositionService: CryptoService) {
+class CryptoController @Inject constructor(
+    private val cryptoPositionService: CryptoService,
+    private val cryptoPositionMapper: CryptoPositionMapper
+) {
     @GetMapping(CRYPTO_BY_ID)
     fun getCryptoPosition(@PathVariable(CRYPTO_ID) cryptoPositionId: UUID): ResponseEntity<CryptoPositionDto> {
-        return ResponseEntity.ok(cryptoPositionService.getCryptoPosition(cryptoPositionId).toDto())
+        val cryptoPosition = cryptoPositionService.getCryptoPosition(cryptoPositionId)
+        return ResponseEntity.ok(cryptoPositionMapper.toDto(cryptoPosition))
     }
 
     @GetMapping(CRYPTOS)
     fun getCryptoPositions(): ResponseEntity<List<CryptoPositionDto>> {
-        return ResponseEntity.ok(cryptoPositionService.getCryptoPositions().map { it.toDto() })
+        return ResponseEntity.ok(cryptoPositionMapper.toDtos(cryptoPositionService.getCryptoPositions()))
     }
 
     @PutMapping(CRYPTO_BY_ID)
     fun editCryptoPosition(
         @PathVariable(CRYPTO_ID) cryptoPositionId: UUID, @RequestBody cryptoPositionDto: CryptoPositionDto
     ): ResponseEntity<Nothing> {
-        cryptoPositionService.editCryptoPosition(cryptoPositionId, cryptoPositionDto.toDomain())
+        cryptoPositionService.editCryptoPosition(cryptoPositionId, cryptoPositionMapper.toDomain(cryptoPositionDto))
         return ResponseEntity.noContent().build()
     }
 
@@ -48,7 +51,8 @@ class CryptoController @Inject constructor(private val cryptoPositionService: Cr
 
     @PostMapping(CRYPTOS)
     fun createCryptoPosition(@RequestBody cryptoPositionDto: CryptoPositionDto): ResponseEntity<CryptoPositionDto> {
-        val cryptoPosition = cryptoPositionService.createCryptoPosition(cryptoPositionDto.toDomain())
-        return ResponseEntity.status(HttpStatus.CREATED).body(cryptoPosition.toDto())
+        val cryptoPosition =
+            cryptoPositionService.createCryptoPosition(cryptoPositionMapper.toDomain(cryptoPositionDto))
+        return ResponseEntity.status(HttpStatus.CREATED).body(cryptoPositionMapper.toDto(cryptoPosition))
     }
 }

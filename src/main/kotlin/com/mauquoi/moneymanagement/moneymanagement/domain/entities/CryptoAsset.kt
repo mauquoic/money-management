@@ -21,7 +21,9 @@ data class CryptoAsset(
         orphanRemoval = true,
         mappedBy = "asset",
         fetch = FetchType.LAZY
-    ) val priceHistory: MutableList<CryptoAssetPrice> = mutableListOf()
+    ) val priceHistory: MutableList<CryptoAssetPrice> = mutableListOf(),
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, mappedBy = "asset", fetch = FetchType.LAZY)
+    val positions: MutableList<CryptoPosition> = arrayListOf(),
 ) {
 
     fun addNewSnapshot(): CryptoAsset {
